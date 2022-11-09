@@ -1,0 +1,1 @@
+{"id":"scharschbot","name":"ScharschBotVelocity","version":"0.1.0-SNAPSHOT","description":"Scharsch bot plugin for Velocity","authors":["SharkTheOne"],"dependencies":[],"main":"de.scharschbot.velocity.plugin.Plugin"}
