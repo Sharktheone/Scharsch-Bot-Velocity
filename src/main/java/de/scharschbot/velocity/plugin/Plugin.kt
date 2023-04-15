@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.google.inject.Inject
 import com.velocitypowered.api.event.Subscribe
-import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.PostLoginEvent
+import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.proxy.ProxyServer
 import org.apache.http.auth.UsernamePasswordCredentials
@@ -22,6 +22,7 @@ import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Paths
 
+
 @Plugin(id = "scharschbot", name = "ScharschBotVelocity", version = "0.1.0-SNAPSHOT", description = "Scharsch bot plugin for Velocity", authors = ["Sharktheone"])
 class Plugin {
     private var server: ProxyServer? = null
@@ -33,9 +34,30 @@ class Plugin {
         this.server = server
         this.logger = logger
         this.config = getConfig()
-        logger.info("ScharschBot Velocity Plugin Loaded!")
 
+
+        val libName = "libScharsch_Bot_Velocity.so"
+        val libDir = Files.createTempDirectory("scharschbotlibs")
+        val libFile = File(libDir.toFile(), libName)
+
+        logger.info("Extracting native library $libName")
+
+
+        javaClass.classLoader.getResourceAsStream(libName).use { input ->
+            if (input == null) {
+                throw RuntimeException("Could not find native library $libName")
+            }
+            Files.copy(input, libFile.toPath())
+        }
+
+        logger.info("Loading native library ${libFile.absolutePath}")
+
+        System.load(libFile.absolutePath)
+        logger.info("Loaded native library $libName")
+
+        logger.info("ScharschBot Velocity Plugin Loaded!")
     }
+    private external fun test(str: String)
 
 
     private fun getConfig(): JsonNode {
@@ -91,7 +113,10 @@ class Plugin {
     }
 
     @Subscribe
-    fun onProxyInitialization(event: ProxyInitializeEvent?) {
+    fun proxyInit(event: ProxyInitializeEvent){
+        logger?.info("Proxy initialized! Testing native library...")
+        test("Sharktheone")
+
     }
 
     @Subscribe
