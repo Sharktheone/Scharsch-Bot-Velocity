@@ -7,12 +7,8 @@ import com.google.inject.Inject
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.PostLoginEvent
-import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.proxy.ProxyServer
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.text.serializer.ComponentSerializer
 import org.apache.http.auth.UsernamePasswordCredentials
 import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.client.methods.HttpPost
@@ -39,10 +35,6 @@ class Plugin {
         this.config = getConfig()
 
         logger.info("ScharschBot Velocity Plugin Loaded!")
-    }
-
-    fun sendMessage() {
-        server?.sendMessage(Component.text("Called By Rust", NamedTextColor.YELLOW))
     }
 
     private fun getConfig(): JsonNode {
@@ -99,7 +91,6 @@ class Plugin {
 
     @Subscribe
     fun playerJoin(event: PostLoginEvent){
-        event.getPlayer()
         val joinJson = "{\"name\":\"" + event.player.username + "\", \"type\":\"join\", \"server\":\"" + config.get("ServerName")?.asText() + "\"}"
         sendValues(joinJson)
     }
