@@ -10,6 +10,9 @@ import com.velocitypowered.api.event.connection.PostLoginEvent
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.proxy.ProxyServer
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.serializer.ComponentSerializer
 import org.apache.http.auth.UsernamePasswordCredentials
 import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.client.methods.HttpPost
@@ -35,30 +38,12 @@ class Plugin {
         this.logger = logger
         this.config = getConfig()
 
-
-        val libName = "libScharsch_Bot_Velocity.so"
-        val libDir = Files.createTempDirectory("scharschbotlibs")
-        val libFile = File(libDir.toFile(), libName)
-
-        logger.info("Extracting native library $libName")
-
-
-        javaClass.classLoader.getResourceAsStream(libName).use { input ->
-            if (input == null) {
-                throw RuntimeException("Could not find native library $libName")
-            }
-            Files.copy(input, libFile.toPath())
-        }
-
-        logger.info("Loading native library ${libFile.absolutePath}")
-
-        System.load(libFile.absolutePath)
-        logger.info("Loaded native library $libName")
-
         logger.info("ScharschBot Velocity Plugin Loaded!")
     }
-    private external fun test(str: String)
 
+    fun sendMessage() {
+        server?.sendMessage(Component.text("Called By Rust", NamedTextColor.YELLOW))
+    }
 
     private fun getConfig(): JsonNode {
         val configName = "config.yml"
@@ -113,14 +98,8 @@ class Plugin {
     }
 
     @Subscribe
-    fun proxyInit(event: ProxyInitializeEvent){
-        logger?.info("Proxy initialized! Testing native library...")
-        test("Sharktheone")
-
-    }
-
-    @Subscribe
     fun playerJoin(event: PostLoginEvent){
+        event.getPlayer()
         val joinJson = "{\"name\":\"" + event.player.username + "\", \"type\":\"join\", \"server\":\"" + config.get("ServerName")?.asText() + "\"}"
         sendValues(joinJson)
     }
@@ -130,4 +109,39 @@ class Plugin {
         val quitJson = "{\"name\":\"" + event.player.username + "\", \"type\":\"quit\", \"server\":\"" + config.get("ServerName")?.asText() + "\"}"
         sendValues(quitJson)
     }
+
+
+    init {
+        val libName = "libscharsch_bot_velocity"
+        var libExtension = ".so"
+
+        val osName = System.getProperty("os.name")
+
+        if (osName.contains("Windows")) {
+            libExtension = ".dll";
+        } else if (osName.contains("Mac")) {
+            libExtension = ".dylib";
+        }
+        val libDir = Files.createTempDirectory("ScharschBot")
+        libDir.toFile().deleteOnExit()
+        val libFile = File(libDir.toFile(), libName)
+
+
+        javaClass.classLoader.getResourceAsStream(libName + libExtension).use { input ->
+            if (input == null) {
+                throw RuntimeException("Could not find ScharschBot library $libName")
+            }
+            Files.copy(input, libFile.toPath())
+        }
+
+        val libPath = Paths.get("./plugins/scharschbot/libscharsch_bot_velocity.so")
+        System.load(libPath.toAbsolutePath().toString())
+        logger?.info("ScharschBot Velocity Plugin Loaded!")
+    }
+
+    @Subscribe
+    external fun onPlayerJoin(event: PostLoginEvent)
+
+    @Subscribe
+    external fun onPlayerLeave(event: DisconnectEvent)
 }

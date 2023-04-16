@@ -1,15 +1,44 @@
 extern crate jni;
 
 use jni::JNIEnv;
-use jni::objects::JString;
+use jni::objects::{JObject, JString, JValue};
 use jni::objects::JClass;
 
-#[allow(non_snake_case)]
 #[no_mangle]
 pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Plugin_test(mut env: JNIEnv, _: JClass, jname: JString) {
     let name: String = env.get_string(&jname).expect("invalid string input").into();
 
     println!("Hello, {}!", name);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Plugin_onPlayerJoin(mut env: JNIEnv, class: JClass, event: JClass) {
+    println!("A player Joined!");
+    let player_obj = match env.call_method(event, "getPlayer", "()Lcom/velocitypowered/api/proxy/Player;", &[]) {
+        Ok(obj) => obj.l().unwrap(),
+        Err(e) => {
+            eprintln!("Error getting player object: {}", e);
+            return;
+        }
+    };
+
+    let player_name = match env.call_method(player_obj, "getUsername", "()Ljava/lang/String;", &[]) {
+        Ok(name) => name.l().unwrap(),
+        Err(e) => {
+            eprintln!("Error getting player name: {}", e);
+            return;
+        }
+    };
+
+    let name: String = match env.get_string(JString::from(player_name).as_ref()) {
+        Ok(s) => s.into(),
+        Err(e) => {
+            eprintln!("Error getting string: {}", e);
+            return;
+        }
+    };
+
+    println!("Player Joined: {}!", name);
 }
 
 // TODO: Config Loader
