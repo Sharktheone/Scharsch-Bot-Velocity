@@ -12,7 +12,7 @@ pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Plugin_test(mut env
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Plugin_onPlayerJoin(mut env: JNIEnv, _class: JClass, event: JClass) {
+pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerJoin(mut env: JNIEnv, _class: JClass, event: JObject) {
     println!("A player Joined!");
     let player_obj = match env.call_method(event, "getPlayer", "()Lcom/velocitypowered/api/proxy/Player;", &[]) {
         Ok(obj) => obj.l().unwrap(),
@@ -43,7 +43,7 @@ pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Plugin_onPlayerJoin
 
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Plugin_onPlayerLeave(mut env: JNIEnv, _class: JClass, event: JClass) {
+pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerLeave(mut env: JNIEnv, _class: JClass, event: JClass) {
     println!("A player Joined!");
     let player_obj = match env.call_method(event, "getPlayer", "()Lcom/velocitypowered/api/proxy/Player;", &[]) {
         Ok(obj) => obj.l().unwrap(),
