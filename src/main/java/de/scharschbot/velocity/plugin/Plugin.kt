@@ -35,71 +35,10 @@ class Plugin {
         this.config = getConfig()
 
         logger.info("ScharschBot Velocity Plugin Loaded!")
+    }
 
+    @Subscribe
+    fun onInitialize(event: ProxyInitializeEvent) {
         server.eventManager.register(this, Events(logger))
-    }
-
-    private fun getConfig(): JsonNode {
-        val configName = "config.yml"
-        val configPath = Paths.get("./plugins/scharschbot/$configName")
-
-        val config = File(configPath.toString())
-        if(!config.exists()){
-            try {
-                Files.createDirectories(Paths.get(config.parent))
-            } catch (e: IOException) {
-                // ignore
-            }
-            try {
-                javaClass.classLoader.getResourceAsStream(configName).use { standardConfig ->
-                    if (standardConfig != null) {
-                        Files.copy(
-                            standardConfig,
-                            configPath
-                        )
-                    }
-                }
-            } catch (e: IOException) {
-                logger?.warn("Could not copy config file!")
-                throw RuntimeException(e)
-            }
-        }
-        val mapper = ObjectMapper(YAMLFactory())
-
-
-        return mapper.readTree(config)
-        }
-
-    private fun sendValues(Data: String){
-        val httpClient = HttpClients.createDefault()
-        try {
-            val request = HttpPost(config.get("URL")?.asText())
-            val creds = UsernamePasswordCredentials(config.get("User")?.asText(),config.get("Pass")?.asText())
-
-            request.entity = StringEntity(Data)
-            request.setHeader("Content-type", "application/json")
-            request.addHeader(BasicScheme().authenticate(creds, request, null))
-
-            val response: CloseableHttpResponse = httpClient.execute(request)
-            if ( !(response.statusLine.statusCode == 204 || response.statusLine.statusCode == 200) ) {
-                logger?.warn("Failure sending data to discord bot: " + response.statusLine.reasonPhrase)
-            }
-            response.close()
-            httpClient.close()
-        } catch (e: Exception) {
-            logger?.warn("Failed to send HTTP Request: " + e.message)
-        }
-    }
-
-    @Subscribe
-    fun playerJoin(event: PostLoginEvent){
-        val joinJson = "{\"name\":\"" + event.player.username + "\", \"type\":\"join\", \"server\":\"" + config.get("ServerName")?.asText() + "\"}"
-        sendValues(joinJson)
-    }
-
-    @Subscribe
-    fun playerQuit(event: DisconnectEvent){
-        val quitJson = "{\"name\":\"" + event.player.username + "\", \"type\":\"quit\", \"server\":\"" + config.get("ServerName")?.asText() + "\"}"
-        sendValues(quitJson)
     }
 }
