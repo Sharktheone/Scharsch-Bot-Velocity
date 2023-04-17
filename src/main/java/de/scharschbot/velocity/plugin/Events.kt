@@ -3,11 +3,14 @@ package de.scharschbot.velocity.plugin
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.PostLoginEvent
+import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
+import org.slf4j.Logger
 import java.io.File
 import java.nio.file.Files
+import java.nio.file.Paths
 
 
-class Events constructor(private val logger: org.slf4j.Logger) {
+class Events(logger: Logger) {
     init {
         val libName = "libscharsch_bot_velocity"
         var libExtension = ".so"
@@ -30,10 +33,15 @@ class Events constructor(private val logger: org.slf4j.Logger) {
             }
             Files.copy(input, libFile.toPath())
         }
+        val libPath = Paths.get("./plugins/scharschbot/libscharsch_bot_velocity.so")
+        System.load(libPath.toAbsolutePath().toString())
+        logger.info("Loaded ScharschBot library $libName")
 
-        System.load(libFile.absolutePath)
-        logger.info("ScharschBot Velocity Plugin Loaded!")
+
+        onInitialize()
     }
+
+    private external fun onInitialize()
 
     @Subscribe
     external fun onPlayerJoin(event: PostLoginEvent)
