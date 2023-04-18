@@ -1,55 +1,46 @@
 extern crate jni;
 
 use jni::JNIEnv;
-use jni::objects::{JObject, JString, JValue};
+use jni::objects::{JObject, JString};
 use jni::objects::JClass;
+use std::fs;
 
+fn load_config() {
+    let paths = fs::read_dir("plugins/scharschbot/").unwrap();
+    for path in paths {
+        println!("Path: {:?}", path);
+    }
+}
+
+//      de.scharschbot.velocity.plugin.Events
+// Java_de_scharschbot_velocity_plugin_Events_onInitialize
 #[no_mangle]
-pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Plugin_test(mut env: JNIEnv, _: JClass, jname: JString) {
-    let name: String = env.get_string(&jname).expect("invalid string input").into();
-
-    println!("Hello, {}!", name);
+pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onInitialize(mut _env: JNIEnv, _class: JClass) {
+    println!("Loading Config!");
+    load_config()
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerJoin(mut env: JNIEnv, _class: JClass, event: JObject) {
-    println!("A player Joined!");
-    let player_obj = match env.call_method(event, "getPlayer", "()Lcom/velocitypowered/api/proxy/Player;", &[]) {
-        Ok(obj) => obj.l().unwrap(),
-        Err(e) => {
-            eprintln!("Error getting player object: {}", e);
-            return;
-        }
-    };
-
-    let player_name = match env.call_method(player_obj, "getUsername", "()Ljava/lang/String;", &[]) {
-        Ok(name) => name.l().unwrap(),
-        Err(e) => {
-            eprintln!("Error getting player name: {}", e);
-            return;
-        }
-    };
-
-    let name: String = match env.get_string(JString::from(player_name).as_ref()) {
-        Ok(s) => s.into(),
-        Err(e) => {
-            eprintln!("Error getting string: {}", e);
-            return;
-        }
-    };
+       let name = extract_player(env, event);
 
     println!("Player Joined: {}!", name);
 }
 
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerLeave(mut env: JNIEnv, _class: JClass, event: JClass) {
-    println!("A player Joined!");
+pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerLeave(mut env: JNIEnv, _class: JClass, event: JObject) {
+    let name = extract_player(env, event);
+
+    println!("Player Left: {}!", name);
+}
+
+fn extract_player(mut env: JNIEnv, event: JObject) -> String {
     let player_obj = match env.call_method(event, "getPlayer", "()Lcom/velocitypowered/api/proxy/Player;", &[]) {
         Ok(obj) => obj.l().unwrap(),
         Err(e) => {
             eprintln!("Error getting player object: {}", e);
-            return;
+            return String::from("");
         }
     };
 
@@ -57,21 +48,18 @@ pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerLeav
         Ok(name) => name.l().unwrap(),
         Err(e) => {
             eprintln!("Error getting player name: {}", e);
-            return;
+            return String::from("");
         }
     };
 
-    let name: String = match env.get_string(JString::from(player_name).as_ref()) {
+    match env.get_string(JString::from(player_name).as_ref()) {
         Ok(s) => s.into(),
         Err(e) => {
             eprintln!("Error getting string: {}", e);
-            return;
+            return String::from("");
         }
-    };
-
-    println!("Player Left: {}!", name);
+    }
 }
-
 
 // TODO: Config Loader
 
