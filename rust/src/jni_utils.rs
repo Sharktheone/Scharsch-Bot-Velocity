@@ -2,16 +2,37 @@ use jni::JNIEnv;
 use jni::objects::{JObject, JValue};
 
 
+#[allow(unused)]
 const JVOID: &str = "V";
+
+#[allow(unused)]
 const JBOOLEAN: &str = "Z";
+
+#[allow(unused)]
 const JBYTE: &str = "B";
+
+#[allow(unused)]
 const JCHAR: &str = "C";
+
+#[allow(unused)]
 const JSHORT: &str = "S";
+
+#[allow(unused)]
 const JINT: &str = "I";
+
+#[allow(unused)]
 const JLONG: &str = "J";
+
+#[allow(unused)]
 const JFLOAT: &str = "F";
+
+#[allow(unused)]
 const JDOUBLE: &str = "D";
+
+#[allow(unused)]
 const JSTRING: &str = "Ljava/lang/String;";
+
+#[allow(unused)]
 
 pub struct JniFn<'a> {
     pub(crate) name: String,
