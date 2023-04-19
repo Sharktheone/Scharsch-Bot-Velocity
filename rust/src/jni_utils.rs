@@ -51,8 +51,7 @@ fn assemble_signature(input: &[String], output: &String) -> String {
     return signature;
 }
 
-
-pub fn call_stacking<'a>(env: &mut JNIEnv<'a>, obj: JObject<'a>, jfn: &[JniFn<'a>]) -> JObject<'a> {
+pub unsafe fn call_stacking<'a, 'b>(env: &mut JNIEnv<'a>, obj: JObject<'b>, jfn: &[JniFn<'a>]) -> JObject<'a> {
     let mut obj = obj;
     for f in jfn {
         let signature = assemble_signature(f.input, &f.output);
@@ -64,5 +63,5 @@ pub fn call_stacking<'a>(env: &mut JNIEnv<'a>, obj: JObject<'a>, jfn: &[JniFn<'a
             }
         };
     }
-    return obj
+    return JObject::from_raw(obj.as_raw());
 }
