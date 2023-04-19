@@ -5,7 +5,7 @@ use jni::objects::JClass;
 
 mod jni_utils;
 mod config;
-use crate::jni_utils::{call_stacking, JniFn};
+use crate::jni_utils::{call_stacking, JniFn, JSTRING};
 use crate::config::load::load_config;
 
 //      de.scharschbot.velocity.plugin.Events
@@ -42,7 +42,7 @@ unsafe fn extract_player<'a, 'b>(mut env: JNIEnv, event: JObject) -> String {
         JniFn {
             name: String::from("getUsername"),
             input: &[],
-            output: String::from("Ljava/lang/String;"),
+            output: String::from(JSTRING),
             args: &[],
         }
     ];
