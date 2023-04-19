@@ -3,34 +3,34 @@ use jni::objects::{JObject, JValue};
 
 
 #[allow(unused)]
-const JVOID: &str = "V";
+pub(crate) const JVOID: &str = "V";
 
 #[allow(unused)]
-const JBOOLEAN: &str = "Z";
+pub(crate) const JBOOLEAN: &str = "Z";
 
 #[allow(unused)]
-const JBYTE: &str = "B";
+pub(crate) const JBYTE: &str = "B";
 
 #[allow(unused)]
-const JCHAR: &str = "C";
+pub(crate) const JCHAR: &str = "C";
 
 #[allow(unused)]
-const JSHORT: &str = "S";
+pub(crate) const JSHORT: &str = "S";
 
 #[allow(unused)]
-const JINT: &str = "I";
+pub(crate) const JINT: &str = "I";
 
 #[allow(unused)]
-const JLONG: &str = "J";
+pub(crate) const JLONG: &str = "J";
 
 #[allow(unused)]
-const JFLOAT: &str = "F";
+pub(crate) const JFLOAT: &str = "F";
 
 #[allow(unused)]
-const JDOUBLE: &str = "D";
+pub(crate) const JDOUBLE: &str = "D";
 
 #[allow(unused)]
-const JSTRING: &str = "Ljava/lang/String;";
+pub(crate) const JSTRING: &str = "Ljava/lang/String;";
 
 #[allow(unused)]
 
