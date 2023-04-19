@@ -1,19 +1,12 @@
 extern crate jni;
-
 use jni::JNIEnv;
 use jni::objects::{JObject, JString};
 use jni::objects::JClass;
-use std::fs;
 
 mod jni_utils;
+mod config;
 use crate::jni_utils::{call_stacking, JniFn};
-
-fn load_config() {
-    let paths = fs::read_dir("plugins/scharschbot/").unwrap();
-    for path in paths {
-        println!("Path: {:?}", path);
-    }
-}
+use crate::config::load::load_config;
 
 //      de.scharschbot.velocity.plugin.Events
 // Java_de_scharschbot_velocity_plugin_Events_onInitialize
