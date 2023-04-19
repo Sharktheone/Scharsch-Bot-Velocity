@@ -5,6 +5,9 @@ use jni::objects::{JObject, JString};
 use jni::objects::JClass;
 use std::fs;
 
+mod jni_utils;
+use crate::jni_utils::{call_stacking, JniFn};
+
 fn load_config() {
     let paths = fs::read_dir("plugins/scharschbot/").unwrap();
     for path in paths {
@@ -21,38 +24,40 @@ pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onInitialize
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerJoin(mut env: JNIEnv, _class: JClass, event: JObject) {
-       let name = extract_player(env, event);
+pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerJoin(env: JNIEnv, _class: JClass, event: JObject) {
+    let name = extract_player(env, event);
 
     println!("Player Joined: {}!", name);
 }
 
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerLeave(mut env: JNIEnv, _class: JClass, event: JObject) {
+pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerLeave(env: JNIEnv, _class: JClass, event: JObject) {
     let name = extract_player(env, event);
 
-    println!("Player Left: {}!", name);
+    println!("Player Left: {} :(", name);
 }
 
-fn extract_player(mut env: JNIEnv, event: JObject) -> String {
-    let player_obj = match env.call_method(event, "getPlayer", "()Lcom/velocitypowered/api/proxy/Player;", &[]) {
-        Ok(obj) => obj.l().unwrap(),
-        Err(e) => {
-            eprintln!("Error getting player object: {}", e);
-            return String::from("");
+unsafe fn extract_player<'a, 'b>(mut env: JNIEnv, event: JObject) -> String {
+    let fns = [
+        JniFn {
+            name: String::from("getPlayer"),
+            input: &[],
+            output: String::from("Lcom/velocitypowered/api/proxy/Player;"),
+            args: &[],
+        },
+        JniFn {
+            name: String::from("getUsername"),
+            input: &[],
+            output: String::from("Ljava/lang/String;"),
+            args: &[],
         }
-    };
+    ];
 
-    let player_name = match env.call_method(player_obj, "getUsername", "()Ljava/lang/String;", &[]) {
-        Ok(name) => name.l().unwrap(),
-        Err(e) => {
-            eprintln!("Error getting player name: {}", e);
-            return String::from("");
-        }
-    };
+    let player_name =  call_stacking(&mut env, event, &fns);
 
-    match env.get_string(JString::from(player_name).as_ref()) {
+
+    match env.get_string(JString::from_raw(player_name.as_raw()).as_ref()) {
         Ok(s) => s.into(),
         Err(e) => {
             eprintln!("Error getting string: {}", e);
