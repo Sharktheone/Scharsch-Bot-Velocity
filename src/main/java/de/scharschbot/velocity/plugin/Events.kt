@@ -41,6 +41,8 @@ class Events(logger: Logger) {
         onInitialize()
     }
 
+    private var ws: Long = 0
+
     private external fun onInitialize()
 
     @Subscribe
