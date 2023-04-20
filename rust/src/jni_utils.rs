@@ -37,7 +37,7 @@ pub(crate) const JSTRING: &str = "Ljava/lang/String;";
 pub struct JniFn<'a> {
     pub(crate) name: String,
     pub(crate) input: &'a [String],
-    pub(crate) output: String,
+    pub(crate) output: &'a str,
     pub(crate) args: &'a [JValue<'a, 'a>],
 }
 
@@ -54,7 +54,7 @@ fn assemble_signature(input: &[String], output: &String) -> String {
 pub unsafe fn call_stacking<'a, 'b>(env: &mut JNIEnv<'a>, obj: JObject<'b>, jfn: &[JniFn<'a>]) -> JObject<'a> {
     let mut obj = obj;
     for f in jfn {
-        let signature = assemble_signature(f.input, &f.output);
+        let signature = assemble_signature(f.input, &f.output.to_string());
         obj = match env.call_method(obj, &f.name, signature, f.args) {
             Ok(name) => name.l().unwrap(),
             Err(e) => {

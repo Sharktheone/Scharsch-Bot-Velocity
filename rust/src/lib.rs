@@ -36,13 +36,13 @@ unsafe fn extract_player<'a, 'b>(mut env: JNIEnv, event: JObject) -> String {
         JniFn {
             name: String::from("getPlayer"),
             input: &[],
-            output: String::from("Lcom/velocitypowered/api/proxy/Player;"),
+            output: "Lcom/velocitypowered/api/proxy/Player;",
             args: &[],
         },
         JniFn {
             name: String::from("getUsername"),
             input: &[],
-            output: String::from(JSTRING),
+            output: JSTRING,
             args: &[],
         }
     ];
