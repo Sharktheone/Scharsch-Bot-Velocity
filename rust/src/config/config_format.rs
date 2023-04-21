@@ -54,17 +54,18 @@ pub const CONFIG_PATH: &str = combine!(
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Config {
-    host: String,
-    port: u16,
-    user: String,
-    password: String,
-    server_name: String,
+    pub(crate) protocol: String,
+    pub(crate) host: String,
+    pub(crate) port: u16,
+    pub(crate) user: String,
+    pub(crate) password: String,
+    pub(crate) server_name: String,
     #[serde(flatten)]
-    server_name_overrides: ServerNameOverride,
+    pub(crate) server_name_overrides: ServerNameOverride,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ServerNameOverride {
-    server_name: String,
-    server_name_override: String,
+    pub(crate) server_name: String,
+    pub(crate) server_name_override: String,
 }
