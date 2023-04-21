@@ -6,6 +6,7 @@ use jni::objects::JClass;
 mod jni_utils;
 mod config;
 mod websocket;
+mod events;
 
 use crate::jni_utils::{call_stacking, JniFn, JSTRING};
 use crate::config::load::load_config;
