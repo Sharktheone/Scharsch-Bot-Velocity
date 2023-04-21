@@ -4,7 +4,7 @@ use std::path::Path;
 use std::io::{ErrorKind, Write};
 use crate::config::config_format::{Config, CONFIG_PATH};
 
-pub fn load_config() {
+pub fn load_config() -> Result<Config, String> {
     let path = Path::new(CONFIG_PATH);
 
     let mut config_file = match File::open(&path) {
@@ -14,16 +14,14 @@ pub fn load_config() {
                 let mut configfile = match File::create(CONFIG_PATH) {
                     Ok(file) => file,
                     Err(e) => {
-                        eprintln!("Error creating config file: {}", e);
-                        return;
+                        return Err(format!("Error creating config file: {}", e));
                     }
                 };
 
                 File::write(&mut configfile, "<TODO: put in standard config>".as_bytes()).unwrap();
-                return;
+                return Err("Config file not found, created new one".to_string());
             } else {
-                eprintln!("Error opening config file: {}", e);
-                return;
+                return Err(format!("Error opening config file: {}", e));
             }
         },
     };
@@ -34,10 +32,16 @@ pub fn load_config() {
         Ok(_) => {},
         Err(e) => {
             eprintln!("Error reading config file: {}", e);
-            return;
+            return Err(format!("Error reading config file: {}", e));
         }
     };
 
-    let config: Config = serde_json::from_str(&config_string).unwrap();
-    println!("Config: {:?}", config);
+    let config: Config = match serde_json::from_str(&config_string){
+        Ok(config) => config,
+        Err(e) => {
+            eprintln!("Error parsing config file: {}", e);
+            return Err(format!("Error parsing config file: {}", e));
+        }
+    };
+    return Ok(config);
 }

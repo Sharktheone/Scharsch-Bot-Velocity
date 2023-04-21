@@ -10,13 +10,20 @@ mod events;
 
 use crate::jni_utils::{call_stacking, JniFn, JSTRING};
 use crate::config::load::load_config;
+use crate::websocket::websocket::connect_ws;
 
 //      de.scharschbot.velocity.plugin.Events
 // Java_de_scharschbot_velocity_plugin_Events_onInitialize
 #[no_mangle]
-pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onInitialize(mut _env: JNIEnv, _class: JClass) {
+pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onInitialize(env: JNIEnv, class: JClass) {
     println!("Loading Config!");
-    load_config()
+    let config = match load_config(){
+        Ok(config) => config,
+        Err(err) => {
+            println!("Error loading config: {}", err);
+            return;
+        }
+    };
 }
 
 #[no_mangle]
