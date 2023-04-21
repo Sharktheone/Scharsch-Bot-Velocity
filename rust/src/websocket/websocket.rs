@@ -1,6 +1,7 @@
 use jni::JNIEnv;
 use jni::objects::{JObject, JValue};
 use ws::{connect, Handler, Sender, Result, Message as WSMessage, Handshake, CloseCode};
+use crate::config::config_format::Config;
 
 
 pub struct WSClient<'a> {
@@ -54,7 +55,11 @@ fn get_ws<'a>(env: &mut JNIEnv<'a>, class:&JObject) ->std::result::Result<*const
     }
 }
 
-fn connect_ws<'a>(env: JNIEnv<'static>, class:&'a JObject<'_>, url:&str) ->std::result::Result<(), String>{
+pub(crate) fn connect_ws(env: JNIEnv, class: &JObject, config: Config) ->std::result::Result<(), String> {
+    let url = format!("{}://{}:{}", config.protocol, config.host, config.host);
+
+
+
     match connect(url, |sender| {
         WSClient {
             sender,

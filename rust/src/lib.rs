@@ -24,6 +24,7 @@ pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onInitialize
             return;
         }
     };
+    connect_ws(env, &class, config).expect("Error connecting to websocket");
 }
 
 #[no_mangle]
