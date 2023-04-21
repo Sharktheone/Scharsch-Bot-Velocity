@@ -1,11 +1,11 @@
 use jni::JNIEnv;
 use jni::objects::{JObject, JValue};
-use ws::{connect, listen, Handler, Sender, Result, Message as WSMessage, Handshake, CloseCode};
+use ws::{connect, Handler, Sender, Result, Message as WSMessage, Handshake, CloseCode};
 
 
 pub struct WSClient<'a> {
     sender: Sender,
-    env:&'a mut JNIEnv<'a>,
+    env:&'a JNIEnv<'a>,
     class:&'a JObject<'a>,
 }
 
@@ -13,7 +13,8 @@ impl <'a> Handler for WSClient<'a> {
     fn on_open(&mut self, _: Handshake) -> Result<()> {
         let client:*const WSClient = self;
         let client_pointer = client as i64;
-        if let Err(err) = store_ws(&mut self.env, self.class, client_pointer) {
+        let mut env = unsafe { self.env.unsafe_clone() };
+        if let Err(err) = store_ws(&mut env, self.class, client_pointer) {
             println!("Error storing ws pointer: {}", err);
         }
         Ok(())
@@ -29,7 +30,8 @@ impl <'a> Handler for WSClient<'a> {
     }
 }
 
-fn store_ws(env: &mut JNIEnv<'_>, class:&JObject, ptr:i64) ->std::result::Result<(),jni::errors::Error>{
+fn store_ws(env: &mut JNIEnv, class:&JObject, ptr:i64) ->std::result::Result<(),jni::errors::Error>{
+
     env.set_field(class, "ws", "J", JValue::Long(ptr))
 }
 
@@ -49,5 +51,18 @@ fn get_ws<'a>(env: &mut JNIEnv<'a>, class:&JObject) ->std::result::Result<*const
             }
         },
         Err(err) => Err(format!("Error getting ws pointer: {}", err)),
+    }
+}
+
+fn connect_ws<'a>(env: JNIEnv<'static>, class:&'a JObject<'_>, url:&str) ->std::result::Result<(), String>{
+    match connect(url, |sender| {
+        WSClient {
+            sender,
+            env: &env,
+            class:&class,
+        }
+    }) {
+        Ok(_) => Ok(()),
+        Err(err) => Err(format!("Error connecting to ws: {}", err)),
     }
 }
