@@ -58,13 +58,13 @@ pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onProxyShutd
 fn extract_player<'a, 'b>(mut env: JNIEnv, event: JObject) -> String {
     let fns = [
         JniFn {
-            name: String::from("getPlayer"),
+            name: "getPlayer",
             input: &[],
-            output: "Lcom/velocitypowered/api/proxy/Player;",
+            output: "Lcom.velocitypowered.api.proxy.Player;",
             args: &[],
         },
         JniFn {
-            name: String::from("getUsername"),
+            name: "getUsername",
             input: &[],
             output: JSTRING,
             args: &[],

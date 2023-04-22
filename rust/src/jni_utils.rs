@@ -35,7 +35,7 @@ pub(crate) const JSTRING: &str = "Ljava/lang/String;";
 #[allow(unused)]
 
 pub struct JniFn<'a> {
-    pub(crate) name: String,
+    pub(crate) name: &'a str,
     pub(crate) input: &'a [String],
     pub(crate) output: &'a str,
     pub(crate) args: &'a [JValue<'a, 'a>],
@@ -44,10 +44,10 @@ pub struct JniFn<'a> {
 fn assemble_signature(input: &[String], output: &String) -> String {
     let mut signature = String::from("(");
     for i in input {
-        signature.push_str(i);
+        signature.push_str(i.replace(".", "/").as_str());
     }
     signature.push_str(")");
-    signature.push_str(output);
+    signature.push_str(output.replace(".", "/").as_str());
     return signature;
 }
 
