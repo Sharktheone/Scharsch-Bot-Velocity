@@ -63,5 +63,5 @@ pub fn call_stacking<'a, 'b>(env: &mut JNIEnv<'a>, obj: JObject<'b>, jfn: &[JniF
             }
         };
     }
-    return unsafe {JObject::from_raw(obj.as_raw())}
+    return unsafe { JObject::from_raw(obj.as_raw()) }
 }

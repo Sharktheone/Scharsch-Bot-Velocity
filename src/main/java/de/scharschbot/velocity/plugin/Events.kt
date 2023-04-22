@@ -3,7 +3,9 @@ package de.scharschbot.velocity.plugin
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.PostLoginEvent
-import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
+import com.velocitypowered.api.event.player.PlayerChatEvent
+import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
+
 import org.slf4j.Logger
 import java.io.File
 import java.nio.file.Files
@@ -50,4 +52,10 @@ class Events(logger: Logger) {
 
     @Subscribe
     external fun onPlayerLeave(event: DisconnectEvent)
+
+    @Subscribe
+    external fun onPlayerChat(event: PlayerChatEvent)
+
+    @Subscribe
+    external fun onProxyShutdown(event: ProxyShutdownEvent)
 }

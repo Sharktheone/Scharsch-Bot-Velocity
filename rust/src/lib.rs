@@ -42,6 +42,19 @@ pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerLeav
     println!("Player Left: {} :(", name);
 }
 
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerChat(env: JNIEnv, _class: JClass, event: JObject) {
+    let name = extract_player(env, event);
+
+    println!("Player Chat: {}!", name);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onProxyShutdown(env: JNIEnv, _class: JClass, event: JObject) {
+    // TODO: Close websocket
+}
+
 fn extract_player<'a, 'b>(mut env: JNIEnv, event: JObject) -> String {
     let fns = [
         JniFn {
@@ -69,6 +82,9 @@ fn extract_player<'a, 'b>(mut env: JNIEnv, event: JObject) -> String {
         }
     }
 }
+
+
+
 
 // TODO: Config Loader
 
