@@ -76,6 +76,32 @@ fn extract_player<'a, 'b>(mut env: JNIEnv, event: JObject) -> String {
     convert_string(&mut env, player_obj)
 }
 
+fn extract_player_server<'a, 'b>(mut env: JNIEnv, event: JObject) -> String {
+    let fns = [
+        JniFn {
+            name: "getPlayer",
+            input: &[],
+            output: "Lcom.velocitypowered.api.proxy.Player;",
+            args: &[],
+        },
+        JniFn {
+            name: "getCurrentServer",
+            input: &[],
+            output: "Lcom.velocitypowered.api.proxy.ServerConnection;",
+            args: &[],
+        },
+        JniFn {
+            name: "toString",
+            input: &[],
+            output: JSTRING,
+            args: &[],
+        }
+    ];
+
+    let server_obj = call_stacking(&mut env, event, &fns);
+
+    convert_string(&mut env, server_obj)
+}
 
 
 
