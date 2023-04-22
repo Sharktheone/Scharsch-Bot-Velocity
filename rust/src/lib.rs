@@ -8,7 +8,7 @@ mod config;
 mod websocket;
 mod events;
 
-use crate::jni_utils::{call_stacking, JniFn, JSTRING};
+use crate::jni_utils::{call_stacking, convert_string, JniFn, JSTRING};
 use crate::config::load::load_config;
 use crate::websocket::websocket::connect_ws;
 
@@ -73,14 +73,7 @@ fn extract_player<'a, 'b>(mut env: JNIEnv, event: JObject) -> String {
 
     let player_obj = call_stacking(&mut env, event, &fns);
 
-
-    match env.get_string(JString::from(player_obj).as_ref()) {
-        Ok(s) => s.into(),
-        Err(e) => {
-            eprintln!("Error getting string: {}", e);
-            return String::from("");
-        }
-    }
+    convert_string(&mut env, player_obj)
 }
 
 
