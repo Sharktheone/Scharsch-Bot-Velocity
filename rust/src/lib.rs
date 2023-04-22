@@ -60,7 +60,7 @@ fn extract_player<'a, 'b>(mut env: JNIEnv, event: JObject) -> String {
         JniFn {
             name: "getPlayer",
             input: &[],
-            output: "Lcom.velocitypowered.api.proxy.Player;",
+            output: "com.velocitypowered.api.proxy.Player",
             args: &[],
         },
         JniFn {
@@ -81,13 +81,13 @@ fn extract_player_server<'a, 'b>(mut env: JNIEnv, event: JObject) -> String {
         JniFn {
             name: "getPlayer",
             input: &[],
-            output: "Lcom.velocitypowered.api.proxy.Player;",
+            output: "com.velocitypowered.api.proxy.Player",
             args: &[],
         },
         JniFn {
             name: "getCurrentServer",
             input: &[],
-            output: "Lcom.velocitypowered.api.proxy.ServerConnection;",
+            output: "com.velocitypowered.api.proxy.ServerConnection",
             args: &[],
         },
         JniFn {

@@ -44,11 +44,26 @@ pub struct JniFn<'a> {
 fn assemble_signature(input: &[String], output: &String) -> String {
     let mut signature = String::from("(");
     for i in input {
-        signature.push_str(i.replace(".", "/").as_str());
+        signature.push_str(make_signature(i).as_str());
     }
     signature.push_str(")");
-    signature.push_str(output.replace(".", "/").as_str());
+    signature.push_str(make_signature(output).as_str());
     return signature;
+}
+
+fn make_signature(sig: &String) -> String {
+    let mut sig = sig.replace(".", "/");
+
+    if sig.contains("/") {
+        if !sig.starts_with("L") {
+            sig = format!("L{}", sig);
+        }
+        if !sig.ends_with(";") {
+            sig = format!("{};", sig);
+        }
+    }
+
+    return sig
 }
 
 pub fn call_stacking<'a, 'b>(env: &mut JNIEnv<'a>, obj: JObject<'b>, jfn: &[JniFn<'a>]) -> JObject<'a> {
