@@ -1,6 +1,6 @@
 extern crate jni;
 use jni::JNIEnv;
-use jni::objects::{JObject, JString};
+use jni::objects::{JObject, JString, JValue};
 use jni::objects::JClass;
 
 mod jni_utils;
@@ -58,10 +58,10 @@ fn extract_player<'a, 'b>(mut env: JNIEnv, event: JObject) -> String {
         }
     ];
 
-    let player_name =  call_stacking(&mut env, event, &fns);
+    let player_obj = call_stacking(&mut env, event, &fns);
 
 
-    match env.get_string(unsafe { JString::from_raw(player_name.as_raw()).as_ref() }) {
+    match env.get_string(JString::from(player_obj).as_ref()) {
         Ok(s) => s.into(),
         Err(e) => {
             eprintln!("Error getting string: {}", e);
