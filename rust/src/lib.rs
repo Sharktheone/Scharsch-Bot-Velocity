@@ -42,7 +42,7 @@ pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerLeav
     println!("Player Left: {} :(", name);
 }
 
-unsafe fn extract_player<'a, 'b>(mut env: JNIEnv, event: JObject) -> String {
+fn extract_player<'a, 'b>(mut env: JNIEnv, event: JObject) -> String {
     let fns = [
         JniFn {
             name: String::from("getPlayer"),
@@ -61,7 +61,7 @@ unsafe fn extract_player<'a, 'b>(mut env: JNIEnv, event: JObject) -> String {
     let player_name =  call_stacking(&mut env, event, &fns);
 
 
-    match env.get_string(JString::from_raw(player_name.as_raw()).as_ref()) {
+    match env.get_string(unsafe { JString::from_raw(player_name.as_raw()).as_ref() }) {
         Ok(s) => s.into(),
         Err(e) => {
             eprintln!("Error getting string: {}", e);
