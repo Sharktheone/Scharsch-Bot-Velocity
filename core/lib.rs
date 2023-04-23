@@ -3,14 +3,9 @@ use jni::JNIEnv;
 use jni::objects::{JObject, JString, JValue};
 use jni::objects::JClass;
 
-mod jni_utils;
-mod config;
-mod websocket;
-mod events;
-
-use crate::jni_utils::{call_stacking, convert_string, JniFn, JSTRING};
-use crate::config::load::load_config;
-use crate::websocket::websocket::connect_ws;
+use scharschbot_core::jni_utils::{call_stacking, convert_string, JniFn, JSTRING};
+use scharschbot_core::config::load::load_config;
+use scharschbot_core::websocket::websocket::connect_ws;
 
 //      de.scharschbot.velocity.plugin.Events
 // Java_de_scharschbot_velocity_plugin_Events_onInitialize
