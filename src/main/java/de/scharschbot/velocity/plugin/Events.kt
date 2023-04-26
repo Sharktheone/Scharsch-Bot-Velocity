@@ -5,11 +5,9 @@ import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.PostLoginEvent
 import com.velocitypowered.api.event.player.PlayerChatEvent
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
-
 import org.slf4j.Logger
 import java.io.File
 import java.nio.file.Files
-import java.nio.file.Paths
 
 
 class Events(logger: Logger) {
@@ -20,9 +18,9 @@ class Events(logger: Logger) {
         val osName = System.getProperty("os.name")
 
         if (osName.contains("Windows")) {
-            libExtension = ".dll";
+            libExtension = ".dll"
         } else if (osName.contains("Mac")) {
-            libExtension = ".dylib";
+            libExtension = ".dylib"
         }
         val libDir = Files.createTempDirectory("ScharschBot")
         libDir.toFile().deleteOnExit()
@@ -35,15 +33,19 @@ class Events(logger: Logger) {
             }
             Files.copy(input, libFile.toPath())
         }
-        val libPath = Paths.get("./plugins/scharschbot/libscharsch_bot_velocity.so")
-        System.load(libPath.toAbsolutePath().toString())
+//        val libPath = Paths.get("./plugins/scharschbot/libscharsch_bot_velocity.so")
+        System.load(libFile.absolutePath)
         logger.info("Loaded ScharschBot library $libName")
 
+        logger.info("Initializing ScharschBot core")
 
-        onInitialize()
+        Thread {
+            onInitialize()
+        }.start() // TODO: Do threading in Rust
     }
 
-    private var ws: Long = 0
+    private var ws_ptr: Long = 0
+    private var logger_ptr: Long = 0
 
     private external fun onInitialize()
 
