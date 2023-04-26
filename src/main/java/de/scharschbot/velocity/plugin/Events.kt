@@ -10,7 +10,7 @@ import java.io.File
 import java.nio.file.Files
 
 
-class Events(logger: Logger) {
+class Events(val logger: Logger) {
     init {
         val libName = "libscharsch_bot_velocity"
         var libExtension = ".so"
@@ -45,7 +45,6 @@ class Events(logger: Logger) {
     }
 
     private var ws_ptr: Long = 0
-    private var logger_ptr: Long = 0
 
     private external fun onInitialize()
 

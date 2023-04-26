@@ -1,5 +1,7 @@
 extern crate jni;
 
+mod logger;
+
 use std::ops::Deref;
 use jni::JNIEnv;
 use jni::objects::{JObject};
@@ -8,21 +10,27 @@ use jni::objects::JClass;
 use scharschbot_core::jni_utils::{call_stacking, convert_string, JniFn, JSTRING};
 use scharschbot_core::config::load::load_config;
 use scharschbot_core::websocket::websocket::connect_ws;
-use scharschbot_core::plugin::logger::{info, error};
+use scharschbot_core::plugin::logger::{info, error, info_no_env};
 use scharschbot_core::events::mc_events::{player_join, player_leave, player_chat};
 
 //      de.scharschbot.velocity.plugin.Events
 // Java_de_scharschbot_velocity_plugin_Events_onInitialize
 #[no_mangle]
 pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onInitialize(mut env: JNIEnv, class: JClass) {
+    logger::set(&mut env, &class);
     info(&mut env, &class, format!("Loading Config!"));
     let config = match load_config(){
-        Ok(config) => config,
+        Ok(config) => {
+            config
+        },
         Err(err) => {
             error(&mut env, &class, format!("Error loading config: {}", err));
             return;
         }
     };
+
+    info(&mut env, &class, "Connecting to websocket!".to_string());
+
     match connect_ws(&mut env, &class, config){
         Ok(_) => info(&mut env, &class, format!("Connected to websocket!")),
         Err(err) => error(&mut env, &class, format!("Error connecting to websocket: {}", err)),
