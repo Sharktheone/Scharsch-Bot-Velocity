@@ -40,7 +40,6 @@ pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onInitialize
 #[no_mangle]
 pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerJoin(mut env: JNIEnv, class: JClass, event: JObject) {
     let (name, server) = extract(&mut env, event);
-    info(&mut env, &class, format!("Player {} joined server {}", name, server));
     player_join(&mut env, &class, name, server);
 }
 
@@ -48,7 +47,6 @@ pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerJoin
 #[no_mangle]
 pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerLeave(mut env: JNIEnv, class: JClass, event: JObject) {
     let (name, server) = extract(&mut env, event);
-    info(&mut env, &class, format!("Player {} left server {}", name, server));
     player_leave(&mut env, &class, name, server);
 }
 
@@ -57,7 +55,6 @@ pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerLeav
 pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerChat(mut env: JNIEnv, class: JClass, event: JObject) {
     let (name, server) = extract(&mut env, unsafe { JObject::from_raw(event.as_ref().deref().clone())}); // TODO: Find better way of cloning JObject
     let message = extract_message(&mut env, event);
-    info(&mut env, &class, format!("Player {} sent message '{}' on server {}", name, message, server));
     player_chat(&mut env, &class, name, message, server);
 }
 
