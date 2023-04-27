@@ -1,5 +1,5 @@
 use jni::JNIEnv;
-use jni::objects::{JClass, JObject, JValue};
+use jni::objects::{JObject, JValue};
 use scharschbot_core::jni_utils::{make_signature};
 use scharschbot_core::plugin::logger::{set_loggers};
 
@@ -39,7 +39,6 @@ fn error(msg: &str, env: &mut JNIEnv, class: &JObject) -> Result<(), String> {
 
 
 
-pub fn set(mut env: &mut JNIEnv, class : &JClass) {
-    set_loggers(&info, &warn, &error,
-        &mut env, &class);
+pub fn set() {
+    set_loggers(&info, &warn, &error);
 }

@@ -10,14 +10,14 @@ use jni::objects::JClass;
 use scharschbot_core::jni_utils::{call_stacking, convert_string, JniFn, JSTRING};
 use scharschbot_core::config::load::load_config;
 use scharschbot_core::websocket::websocket::connect_ws;
-use scharschbot_core::plugin::logger::{info, error, info_no_env};
+use scharschbot_core::plugin::logger::{info, error};
 use scharschbot_core::events::mc_events::{player_join, player_leave, player_chat};
 
 //      de.scharschbot.velocity.plugin.Events
 // Java_de_scharschbot_velocity_plugin_Events_onInitialize
 #[no_mangle]
 pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onInitialize(mut env: JNIEnv, class: JClass) {
-    logger::set(&mut env, &class);
+    logger::set();
     info(&mut env, &class, format!("Loading Config!"));
     let config = match load_config(){
         Ok(config) => {
