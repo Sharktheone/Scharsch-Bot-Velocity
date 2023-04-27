@@ -10,7 +10,7 @@ import java.io.File
 import java.nio.file.Files
 
 
-class Events(val logger: Logger) {
+class Events(private val logger: Logger) {
     init {
         val libName = "libscharsch_bot_velocity"
         var libExtension = ".so"
@@ -33,7 +33,6 @@ class Events(val logger: Logger) {
             }
             Files.copy(input, libFile.toPath())
         }
-//        val libPath = Paths.get("./plugins/scharschbot/libscharsch_bot_velocity.so")
         System.load(libFile.absolutePath)
         logger.info("Loaded ScharschBot library $libName")
 
