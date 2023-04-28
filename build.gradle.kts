@@ -28,11 +28,7 @@ repositories {
     java.sourceCompatibility = JavaVersion.VERSION_1_8
     sourceSets {
         main {
-            java {
-                srcDirs("src/main/java")
-            }
             kotlin {
-                srcDirs("src/main/java")
                 srcDirs("src/main/kotlin")
             }
             resources {
