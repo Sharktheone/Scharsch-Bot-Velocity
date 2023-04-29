@@ -40,21 +40,21 @@ pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onInitialize
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerJoin(mut env: JNIEnv<'static>, class: JClass<'static>, event: JObject) {
+pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerJoin(mut env: JNIEnv<'static>, _class: JClass<'static>, event: JObject) {
     let (name, server) = extract(&mut env, event);
     player_join(name, server);
 }
 
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerLeave(mut env: JNIEnv<'static>, class: JClass<'static>, event: JObject) {
+pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerLeave(mut env: JNIEnv<'static>, _class: JClass<'static>, event: JObject) {
     let (name, server) = extract(&mut env, event);
     player_leave(name, server);
 }
 
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerChat(mut env: JNIEnv<'static>, class: JClass<'static>, event: JObject) {
+pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerChat(mut env: JNIEnv<'static>, _class: JClass<'static>, event: JObject) {
     let (name, server) = extract(&mut env, unsafe { JObject::from_raw(event.as_ref().deref().clone())}); // TODO: Find better way of cloning JObject
     let message = extract_message(&mut env, event);
     player_chat(name, message, server);

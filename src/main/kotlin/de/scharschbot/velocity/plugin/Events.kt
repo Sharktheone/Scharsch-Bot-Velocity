@@ -43,8 +43,6 @@ class Events(private val logger: Logger) {
         }.start() // TODO: Do threading in Rust
     }
 
-    private var ws_ptr: Long = 0
-
     private external fun onInitialize()
 
     @Subscribe
