@@ -45,9 +45,9 @@ pub(crate) fn extract_player_server<'a, 'b>(mut env: &mut JNIEnv, event: JObject
         }
     ];
 
-    let server_obj = call_stacking(&mut env, event, &fns);
+    let server_obj = call_stacking(&mut env,event, &fns);
 
-    convert_string(&mut env, server_obj)
+    convert_string(&mut env,server_obj)
 }
 
 pub(crate) fn extract_message(mut env: &mut JNIEnv, event: JObject) -> String {

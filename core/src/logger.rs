@@ -35,10 +35,6 @@ fn error(msg: &str, env: &mut JNIEnv, class: &JObject) -> Result<(), String> {
     log(msg, env, class, "error")
 }
 
-
-
-
-
 pub fn set() {
     set_loggers(&info, &warn, &error);
 }
