@@ -1,9 +1,7 @@
-use std::ops::Deref;
-use jni::JNIEnv;
 use jni::objects::{JObject};
 use scharschbot_core::jni_utils::{call_stacking, convert_string, JniFn, JSTRING};
 
-pub(crate) fn extract_player(mut env: &mut JNIEnv, event: JObject) -> String {
+pub(crate) fn extract_player(event: &JObject) -> String {
     let fns = [
         JniFn {
             name: "getPlayer",
@@ -18,12 +16,12 @@ pub(crate) fn extract_player(mut env: &mut JNIEnv, event: JObject) -> String {
             args: &[],
         }
     ];
-    let player_obj = call_stacking(&mut env, &event, &fns);
+    let player_obj = call_stacking(event, &fns);
 
-    convert_string(&mut env, &player_obj)
+    convert_string(&player_obj)
 }
 
-pub(crate) fn extract_player_server<'a, 'b>(mut env: &mut JNIEnv, event: JObject) -> String {
+pub(crate) fn extract_player_server(event: &JObject) -> String {
     let fns = [
         JniFn {
             name: "getPlayer",
@@ -45,12 +43,12 @@ pub(crate) fn extract_player_server<'a, 'b>(mut env: &mut JNIEnv, event: JObject
         }
     ];
 
-    let server_obj = call_stacking(&mut env, &event, &fns);
+    let server_obj = call_stacking(event, &fns);
 
-    convert_string(&mut env, &server_obj)
+    convert_string(&server_obj)
 }
 
-pub(crate) fn extract_message(mut env: &mut JNIEnv, event: JObject) -> String {
+pub(crate) fn extract_message(event: JObject) -> String {
     let fns = [
         JniFn {
             name: "getMessage",
@@ -59,13 +57,13 @@ pub(crate) fn extract_message(mut env: &mut JNIEnv, event: JObject) -> String {
             args: &[],
         }
     ];
-    let message_obj = call_stacking(&mut env, &event, &fns);
+    let message_obj = call_stacking(&event, &fns);
 
-    convert_string(&mut env, &message_obj)
+    convert_string(&message_obj)
 }
 
-pub(crate) fn extract(mut env: &mut JNIEnv, event: JObject) -> (String, String) {
-    let name = extract_player(&mut env, unsafe { JObject::from_raw(event.as_ref().deref().clone())}); // TODO: Find better way of cloning JObject
-    let server = extract_player_server(&mut env, event);
+pub(crate) fn extract(event: &JObject) -> (String, String) {
+    let name = extract_player(event);
+    let server = extract_player_server(event);
     (name, server)
 }
