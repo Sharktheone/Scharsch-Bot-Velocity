@@ -32,7 +32,7 @@ pub(crate) fn extract_player_server(event: &JObject) -> String {
         JniFn {
             name: "getCurrentServer",
             input: &[],
-            output: "java.util.Optional", //  public abstract java.util.Optional<com.velocitypowered.api.proxy.ServerConnection> getCurrentServer()
+            output: "java.util.Optional",
             args: &[],
         },
         JniFn {

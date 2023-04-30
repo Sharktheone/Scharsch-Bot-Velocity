@@ -16,8 +16,6 @@ use crate::util::{extract, extract_message};
 
 pub static mut CLASS: Option<JClass<'static>> = None;
 
-//      de.scharschbot.velocity.plugin.Events
-// Java_de_scharschbot_velocity_plugin_Events_onInitialize
 #[no_mangle]
 pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onInitialize(env: JNIEnv<'static>, class: JClass<'static>) {
     let vm = match env.get_java_vm() {
@@ -74,36 +72,6 @@ pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onPlayerChat
 pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onProxyShutdown(_env: JNIEnv, _class: JClass, _event: JObject) {
     // TODO: Close websocket
 }
-
-// TODO: Config Loader
-
-// TODO: PlayerJoinEvent
-// TODO: PlayerQuitEvent
-// TODO: PlayerChatEvent
-
-// TODO: WS EVENTS:
-
-
-// TODO: AUTH: auth
-
-// TODO: SEND: sendPlayers
-// TODO: SEND: playerJoined
-// TODO: SEND: playerLeft
-// TODO: SEND: chatMessage
-// TODO: SEND: reportPlayer
-// TODO: SEND: banPlayer
-// TODO: SEND: unbanPlayer
-// TODO: SEND: kickPlayer
-// (TODO: SEND: playerAdvancement)
-// (TODO: SEND: playerDeath)
-
-
-// TODO: RECEIVE: sendChatMessage
-// TODO: RECEIVE: sendPlayers
-// TODO: RECEIVE: kickPlayer
-// TODO: RECEIVE: banPlayer
-// TODO: RECEIVE: unbanPlayer
-// TODO: RECEIVE: sendCommand
 
 
 
