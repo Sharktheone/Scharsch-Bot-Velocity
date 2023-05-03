@@ -1,1 +1,1 @@
-rootProject.name = "velocity.plugin"
+rootProject.name = "Scharsch-Bot-Velocity"

@@ -24,7 +24,7 @@ repositories {
 
     group = "de.scharschbot"
     version = "0.1.0-SNAPSHOT"
-    description = "Scharschbot Plugin Bungee"
+    description = "Scharschbot Plugin for Velocity"
     java.sourceCompatibility = JavaVersion.VERSION_1_8
     sourceSets {
         main {
