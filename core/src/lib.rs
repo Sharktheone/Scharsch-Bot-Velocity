@@ -10,7 +10,7 @@ use scharschbot_core::config::load::load_config;
 use scharschbot_core::websocket::websocket::connect_ws;
 use scharschbot_core::plugin::logger::{info, error, error_no_env};
 use scharschbot_core::events::mc_events::{player_join, player_leave, player_chat};
-use scharschbot_core::set_vm;
+use scharschbot_core::jni_utils::set_vm;
 
 use crate::util::{extract, extract_message};
 
@@ -31,7 +31,7 @@ pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onInitialize
 
     logger::set();
     info(format!("Loading Config!"));
-    let config = match load_config() {
+    match load_config() {
         Ok(config) => {
             config
         }
@@ -43,7 +43,7 @@ pub unsafe extern "C" fn Java_de_scharschbot_velocity_plugin_Events_onInitialize
 
     info("Connecting to websocket!".to_string());
 
-    match connect_ws(config) {
+    match connect_ws() {
         Ok(_) => info(format!("Closed websocket")),
         Err(err) => error(format!("Error connecting to websocket: {}", err)),
     };
